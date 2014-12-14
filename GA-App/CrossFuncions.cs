@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace GA.App
 {
-    public static class SelectionFuncions
+    public static class CrossFuncions
     {
         static Random random = new Random();
 
-        static public void First(List<IIndividual> individuals, int parentsCount)
+        static public IIndividual First(List<IIndividual> individuals, int parentsCount)
         {
             while (true)
             {
@@ -22,16 +22,15 @@ namespace GA.App
 
                 if (p1Index != p2Index && !partner1.Equals(partner2))
                 {
-                    individuals.Add(partner1.Selection(partner2));
-                    return;
+                    return partner1.Selection(partner2);
                 }
             }
         }
 
-        static public void Second(List<IIndividual> individuals, int parentsCount)
+        /*static public void Second(List<IIndividual> individuals, int parentsCount)
         {
             individuals.Add(individuals[0].Selection(individuals[1]));
             return;
-        }
+        }*/
     }
 }

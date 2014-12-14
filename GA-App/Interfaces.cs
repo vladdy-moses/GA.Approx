@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace GA.App
 {
-    public interface IGeneticEngine
-    {
-        void Start();
-        void PrintResult();
-    }
-
     public interface IIndividual
     {
         double FitnessValue { set; get; }

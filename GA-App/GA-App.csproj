@@ -47,7 +47,8 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SelectionFuncions.cs" />
+    <Compile Include="CrossFuncions.cs" />
+    <Compile Include="SelectionFunctions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

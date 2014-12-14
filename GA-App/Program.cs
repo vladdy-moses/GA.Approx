@@ -18,30 +18,26 @@ namespace GA.App
                     MinValue = 2,
                     MaxValue = 22,
                     ControlPointNumber = 13,
+                    SelectionFunction = SelectionFunctions.First,
+                    CrossFunction = CrossFuncions.First,
                     Function = i => Math.Log(i)
                 };
 
-            geneticEngine.SelectionFunction = SelectionFuncions.First;
+            Console.WriteLine("=============");
             for (int i = 0; i < 10; i++)
             {
                 geneticEngine.Start();
                 geneticEngine.PrintResult();
-                Console.WriteLine("");
             }
 
             Console.WriteLine("=============");
-
-            geneticEngine.SelectionFunction = SelectionFuncions.First;
             for (int i = 0; i < 10; i++)
             {
                 geneticEngine.Start();
                 geneticEngine.PrintResult();
-                Console.WriteLine("");
             }
 
             Console.WriteLine("=============");
-
-            geneticEngine.SelectionFunction = SelectionFuncions.First;
             geneticEngine.MaxSteps = 1000;
             for (int i = 0; i < 10; i++)
             {
@@ -51,8 +47,6 @@ namespace GA.App
             }
 
             Console.WriteLine("=============");
-
-            geneticEngine.SelectionFunction = SelectionFuncions.First;
             geneticEngine.ControlPointNumber = 3;
             geneticEngine.MaxSteps = 10000;
             for (int i = 0; i < 10; i++)
@@ -63,7 +57,6 @@ namespace GA.App
             }
 
             Console.ReadKey();
-
         }
     }
 }

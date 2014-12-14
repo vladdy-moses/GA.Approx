@@ -7,5 +7,6 @@ using System.Threading.Tasks;
 namespace GA.App
 {
     public delegate double MathFunc(double num);
-    public delegate void SelectionFunc(List<IIndividual> individuals, int parentsCount);
+    public delegate IIndividual CrossFunc(List<IIndividual> individuals, int parentsCount);
+    public delegate List<IIndividual> SelectionFunc(List<IIndividual> individuals, int maxIndividuals);
 }

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace GA.App
 {
-    public class GeneticEngine : IGeneticEngine
+    public class GeneticEngine
     {
+        public CrossFunc CrossFunction { set; get; }
         public SelectionFunc SelectionFunction { set; get; }
         public int MaxSteps { set; get; }
         public int TermsCount { set; get; }
@@ -15,12 +16,18 @@ namespace GA.App
         public double MinValue { set; get; }
         public double MaxValue { set; get; }
         public int ControlPointNumber { set; get; }
+        public int MaxIndividualsPerGeneration { set; get; }
+        public int IndividualsInNewGeneration { set; get; }
 
         // private
         private List<IIndividual> individuals;
-        private int maxIndividualsPerGeneration = 50;
         private Random random = new Random();
-        private int individualsInNewGeneration = 100;
+
+        public GeneticEngine()
+        {
+            MaxIndividualsPerGeneration = 50;
+            IndividualsInNewGeneration = 100;
+        }
         
         public void Start()
         {
@@ -31,24 +38,23 @@ namespace GA.App
             for (int i = 0; i < MaxSteps; i++)
             {
                 // скрещивание
-                while(individuals.Count < individualsInNewGeneration)
-                    SelectionFunction(individuals, maxIndividualsPerGeneration);
+                while (individuals.Count < IndividualsInNewGeneration)
+                {
+                    var individual = CrossFunction(individuals, MaxIndividualsPerGeneration);
+                    if (individual != null)
+                        individuals.Add(individual);
+                }
 
                 // мутация среди потомков
-                for (int j = maxIndividualsPerGeneration; j < individualsInNewGeneration; j++) //maxIndividualsPerGeneration
+                for (int j = MaxIndividualsPerGeneration; j < IndividualsInNewGeneration; j++) //maxIndividualsPerGeneration
                 {
                     if (random.NextDouble() < 0.5)
                         individuals[j].Mutate();
-
-                    //Console.WriteLine("{0} mutate!!", j);
                 }
-                //Console.WriteLine("--------------");
 
                 // отбор
                 individuals.ForEach(ind => ind.FitnessValue = GetDelta(ind));
-                individuals = individuals.OrderBy(ind => ind.FitnessValue).Take(maxIndividualsPerGeneration).ToList();
-
-                //Console.WriteLine("STEP {0} :\t{1}\t{2}\t{3}", i, individuals[0].FitnessValue.ToString("F6"), individuals.Average(ind => ind.FitnessValue).ToString("F6"), individuals.Max(ind => ind.FitnessValue).ToString("F6"));
+                individuals = SelectionFunction(individuals, MaxIndividualsPerGeneration);
 
                 if (individuals.First().FitnessValue < 0.0001)
                     break;
@@ -58,18 +64,7 @@ namespace GA.App
         // Показывает результат
         public void PrintResult()
         {
-            var winner = individuals.First();
-
-            // print points
-            /*var stepSize = (MaxValue - MinValue) / ControlPointNumber;
-            for (double num = MinValue; num <= MaxValue; num += stepSize)
-            {
-                var g1 = Function(num);
-                var g2 = IndividualFunc(num, winner);
-                var delta = Math.Abs(g1 - g2);
-
-                Console.WriteLine("{0}\t{1}\t{2}\t{3}", num.ToString("F6"), g1.ToString("F6"), g2.ToString("F6"), delta.ToString("F6"));
-            }*/
+            var winner = GetWinner();
 
             // print formula
             var cultureInfo = new System.Globalization.CultureInfo("en-US");
@@ -79,24 +74,30 @@ namespace GA.App
                 Console.Write(" + {0}*x^{1}", winner.Get(i).ToString("F6", cultureInfo), i);
             }
             Console.WriteLine("");
+        }
 
-            Console.WriteLine("Delta is {0}", winner.FitnessValue);
+        // Возвращает первого
+        public IIndividual GetWinner()
+        {
+            if (individuals == null || individuals.Count == 0)
+                return null;
+            return individuals.OrderBy(i => i.FitnessValue).FirstOrDefault();
         }
 
         // определение первого поколения
         protected void GenerateFirst()
         {
             individuals = new List<IIndividual>();
-            for (int i = 0; i < individualsInNewGeneration; i++)
+            for (int i = 0; i < IndividualsInNewGeneration; i++)
             {
                 var individualItem = new Individual(TermsCount, random);
                 individualItem.Generate();
                 individuals.Add(individualItem);
             }
 
-            // ОТБОР ПЕРВОГО ПОКОЛЕНИЯ
+            // отбор первого поколения
             individuals.ForEach(ind => ind.FitnessValue = GetDelta(ind));
-            individuals = individuals.OrderBy(ind => ind.FitnessValue).Take(maxIndividualsPerGeneration).ToList();
+            individuals = SelectionFunction(individuals, MaxIndividualsPerGeneration);
         }
 
         // определение отклонения
