@@ -13,48 +13,32 @@ namespace GA.App
         {
             var geneticEngine = new GeneticEngine()
                 {
-                    MaxSteps = 100,
+                    MaxSteps = 30,
                     TermsCount = 5,
-                    MinValue = 2,
-                    MaxValue = 22,
-                    ControlPointNumber = 13,
+                    MinValue = 8.3,
+                    MaxValue = 10.3,
+                    ControlPointNumber = 10,
                     SelectionFunction = SelectionFunctions.First,
                     CrossFunction = CrossFuncions.First,
-                    Function = i => Math.Log(i)
+                    Function = i => Math.Log(2*i)+Math.Cos(i/2)-Math.Tan(i)
                 };
 
-            Console.WriteLine("=============");
-            for (int i = 0; i < 10; i++)
+            Console.WriteLine("= ЗАПУСК ГЕНЕТИЧЕСКОГО АЛГОРИТМА =");
+            Console.WriteLine("Число шагов: {0}", geneticEngine.MaxSteps);
+            Console.WriteLine("Число точек: {0}", geneticEngine.ControlPointNumber);
+            Console.WriteLine("Число слагаемых: {0}", geneticEngine.TermsCount);
+            Console.WriteLine("");
+
+            var list = new List<double>();
+            for (int i = 0; i < 100; i++)
             {
                 geneticEngine.Start();
-                geneticEngine.PrintResult();
+                list.Add(geneticEngine.GetWinner().FitnessValue);
             }
 
-            Console.WriteLine("=============");
-            for (int i = 0; i < 10; i++)
-            {
-                geneticEngine.Start();
-                geneticEngine.PrintResult();
-            }
+            Console.WriteLine("Завершено!");
 
-            Console.WriteLine("=============");
-            geneticEngine.MaxSteps = 1000;
-            for (int i = 0; i < 10; i++)
-            {
-                geneticEngine.Start();
-                geneticEngine.PrintResult();
-                Console.WriteLine("");
-            }
-
-            Console.WriteLine("=============");
-            geneticEngine.ControlPointNumber = 3;
-            geneticEngine.MaxSteps = 10000;
-            for (int i = 0; i < 10; i++)
-            {
-                geneticEngine.Start();
-                geneticEngine.PrintResult();
-                Console.WriteLine("");
-            }
+            Console.WriteLine("{0} {1} {2}", list.Min(), list.Average(), list.Max());
 
             Console.ReadKey();
         }

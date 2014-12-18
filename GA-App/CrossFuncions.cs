@@ -26,11 +26,5 @@ namespace GA.App
                 }
             }
         }
-
-        /*static public void Second(List<IIndividual> individuals, int parentsCount)
-        {
-            individuals.Add(individuals[0].Selection(individuals[1]));
-            return;
-        }*/
     }
 }
